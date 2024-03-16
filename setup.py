@@ -1,146 +1,72 @@
-#!/usr/bin/python3
-# File name   : setup.py
-# Author      : Adeept
-# Date        : 2020/3/14
+#!/usr/bin/env python3
+# Improved setup.py
+# Enhancements include error handling, efficiency, and better user interaction.
 
 import os
-import time
+import subprocess
+import sys
 
-curpath = os.path.realpath(__file__)
-thisPath = "/" + os.path.dirname(curpath)
+def run_command(command):
+    """Run a system command with error handling."""
+    try:
+        subprocess.check_call(command, shell=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing {command}: {e}", file=sys.stderr)
+        sys.exit(1)
 
-def replace_num(file,initial,new_num):  
-    newline=""
-    str_num=str(new_num)
-    with open(file,"r") as f:
-        for line in f.readlines():
-            if(line.find(initial) == 0):
-                line = (str_num+'\n')
-            newline += line
-    with open(file,"w") as f:
-        f.writelines(newline)
+def install_packages():
+    """Install system and Python packages."""
+    print("Updating package lists...")
+    run_command("sudo apt-get update")
 
-for x in range(1,4):
-	if os.system("sudo apt-get update") == 0:
-		break
+    # System packages
+    sys_packages = [
+        "python3-dev", "python3-pip", "libfreetype6-dev", "libjpeg-dev",
+        "build-essential", "i2c-tools", "python3-smbus", "util-linux",
+        "procps", "hostapd", "iproute2", "iw", "haveged", "dnsmasq"
+    ]
+    for package in sys_packages:
+        run_command(f"sudo apt-get install -y {package}")
 
-os.system("sudo apt-get purge -y wolfram-engine")
-os.system("sudo apt-get purge -y libreoffice*")
-os.system("sudo apt-get -y clean")
-os.system("sudo apt-get -y autoremove")
+    # Python packages
+    python_packages = [
+        "rpi_ws281x", "mpu6050-raspberrypi", "flask",
+        "flask_cors", "websockets", "numpy", "opencv-contrib-python",
+        "imutils", "zmq", "pybase64", "psutil"
+    ]
+    for package in python_packages:
+        run_command(f"pip install {package}")
 
-# for x in range(1,4):
-# 	if os.system("sudo apt-get -y upgrade") == 0:
-# 		break
+#def configure_i2c():
+#    """Enable I2C and configure necessary settings."""
+#    print("Configuring I2C...")
+#    with open("/boot/config.txt", 'a') as f:
+#        f.write("\ndtparam=i2c_arm=on\nstart_x=1\n")
 
-for x in range(1,4):
-	if os.system("sudo pip3 install -U pip") == 0:
-		break
+def install_create_ap():
+    """Clone and install create_ap."""
+    if not os.path.exists("./create_ap"):
+        run_command("git clone https://github.com/oblique/create_ap")
+    os.chdir("create_ap")
+    run_command("sudo make install")
+    os.chdir("..")
 
-for x in range(1,4):
-	if os.system("sudo apt-get install -y python-dev python-pip libfreetype6-dev libjpeg-dev build-essential") == 0:
-		break
+def configure_startup_script():
+    """Configure startup script."""
+    startup_script = "/home/pi/startup.sh"
+    print(f"Configuring startup script: {startup_script}")
+    with open(startup_script, 'w') as file:
+        file.write("#!/bin/sh\nsudo python3 server/webServer.py")
+    run_command(f"sudo chmod 777 {startup_script}")
+    run_command(f"echo '@reboot root {startup_script}' | sudo tee -a /etc/crontab > /dev/null")
 
-for x in range(1,4):
-	if os.system("sudo -H pip3 install --upgrade luma.oled") == 0:
-		break
+def main():
+    print("Starting setup...")
+    install_packages()
+    #configure_i2c()
+    install_create_ap()
+    configure_startup_script()
+    print("Setup completed. It's recommended to reboot your system.")
 
-for x in range(1,4):
-	if os.system("sudo apt-get install -y i2c-tools") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install adafruit-pca9685") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install rpi_ws281x") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo apt-get install -y python3-smbus") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install mpu6050-raspberrypi") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install flask") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install flask") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install flask_cors") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install websockets") == 0:
-		break
-
-try:
-	replace_num("/boot/config.txt",'#dtparam=i2c_arm=on','dtparam=i2c_arm=on\nstart_x=1\n')
-except:
-	print('try again')
-
-
-for x in range(1,4):
-	if os.system("sudo pip3 install numpy") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install opencv-contrib-python==3.4.3.18") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo apt-get -y install libqtgui4 libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqt4-test") == 0:
-		break
-
-for x in range(1,4):
-	if os.system("sudo pip3 install imutils zmq pybase64 psutil") == 0:   ####
-		break
-
-for x in range(1,4):
-	if os.system("sudo git clone https://github.com/oblique/create_ap") == 0:
-		break
-
-try:
-	os.system("cd " + thisPath + "/create_ap && sudo make install")
-except:
-	pass
-
-try:
-	os.system("cd //home/pi/create_ap && sudo make install")
-except:
-	pass
-
-for x in range(1,4):
-	if os.system("sudo apt-get install -y util-linux procps hostapd iproute2 iw haveged dnsmasq") == 0:
-		break
-
-try:
-	os.system('sudo touch //home/pi/startup.sh')
-	with open("//home/pi/startup.sh",'w') as file_to_write:
-		#you can choose how to control the robot
-		file_to_write.write("#!/bin/sh\nsudo python3 " + thisPath + "/server/webServer.py")
-		# file_to_write.write("#!/bin/sh\nsudo python3 " + thisPath + "/server/server.py")
-except:
-	pass
-
-os.system('sudo chmod 777 //home/pi/startup.sh')
-
-replace_num('/etc/rc.local','fi','fi\n//home/pi/startup.sh start')
-
-try: #fix conflict with onboard Raspberry Pi audio
-	os.system('sudo touch /etc/modprobe.d/snd-blacklist.conf')
-	with open("/etc/modprobe.d/snd-blacklist.conf",'w') as file_to_write:
-		file_to_write.write("blacklist snd_bcm2835")
-except:
-	pass
-
-print('The program in Raspberry Pi has been installed, disconnected and restarted. \nYou can now power off the Raspberry Pi to install the camera and driver board (Robot HAT). \nAfter turning on again, the Raspberry Pi will automatically run the program to set the servos port signal to turn the servos to the middle position, which is convenient for mechanical assembly.')
-print('restarting...')
-os.system("sudo reboot")
+if __name__ == "__main__":
+    main()

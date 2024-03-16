@@ -5,6 +5,7 @@
 # Author      : William
 # Date        : 2020/03/17
 
+import smbus2 as smbus
 import time
 import threading
 import move
@@ -25,12 +26,13 @@ import websockets
 import json
 import app
 
+
 OLED_connection = 1
 try:
     import OLED
     screen = OLED.OLED_ctrl()
     screen.start()
-    screen.screen_show(1, 'ADEEPT.COM')
+    screen.screen_show(1, 'Otto')
 except:
     OLED_connection = 0
     print('OLED disconnected')
@@ -78,7 +80,7 @@ thisPath = "/" + os.path.dirname(curpath)
 
 def servoPosInit():
     scGear.initConfig(0,init_pwm[0],1)
-    P_sc.initConfig(1,init_pwm[1],1)
+    P_sc.initConfig(13,init_pwm[1],1)
     T_sc.initConfig(2,init_pwm[2],1)
     H_sc.initConfig(3,init_pwm[3],1)
     G_sc.initConfig(4,init_pwm[4],1)
@@ -104,7 +106,7 @@ def FPV_thread():
 
 
 def ap_thread():
-    os.system("sudo create_ap wlan0 eth0 Adeept_Robot 12345678")
+    os.system("sudo create_ap wlan0 eth0 otto 12345678")
 
 
 def functionSelect(command_input, response):
@@ -219,19 +221,19 @@ def robotCtrl(command_input, response):
         scGear.moveServoInit([0])
 
     elif 'lookleft' == command_input:
-        P_sc.singleServo(1, 1, 3)
+        P_sc.singleServo(13, 1, 3)
 
     elif 'lookright' == command_input:
-        P_sc.singleServo(1, -1, 3)
+        P_sc.singleServo(13, -1, 3)
 
     elif 'LRstop' in command_input:
         P_sc.stopWiggle()
 
     elif 'armup' == command_input:
-        T_sc.singleServo(2, 1, 3)
+        T_sc.singleServo(12, 1, 3)
 
     elif 'armdown' == command_input:
-        T_sc.singleServo(2, -1, 3)
+        T_sc.singleServo(12, -1, 3)
 
     elif 'armstop' in command_input:
         T_sc.stopWiggle()
@@ -292,10 +294,10 @@ def configPWM(command_input, response):
         scGear.initConfig(0,init_pwm0,1)
         replace_num('init_pwm0 = ', 300)
 
-        P_sc.initConfig(1,300,1)
+        P_sc.initConfig(13,300,1)
         replace_num('init_pwm1 = ', 300)
 
-        T_sc.initConfig(2,300,1)
+        T_sc.initConfig(12,300,1)
         replace_num('init_pwm2 = ', 300)
 
         H_sc.initConfig(3,300,1)

@@ -18,8 +18,7 @@ pwm1_direction = 1
 pwm2_direction = 1
 pwm3_direction = 1
 
-
-pwm = Adafruit_PCA9685.PCA9685()
+pwm = Adafruit_PCA9685.PCA9685(busnum=1)
 pwm.set_pwm_freq(50)
 
 pwm0_init = 300
@@ -120,11 +119,11 @@ def lookleft(speed):
 	if pwm0_direction:
 		pwm0_pos += speed
 		pwm0_pos = ctrl_range(pwm0_pos, pwm0_max, pwm0_min)
-		pwm.set_pwm(0, 0, pwm0_pos)
+		pwm.set_pwm(13, 0, pwm0_pos)
 	else:
 		pwm0_pos -= speed
 		pwm0_pos = ctrl_range(pwm0_pos, pwm0_max, pwm0_min)
-		pwm.set_pwm(0, 0, pwm0_pos)
+		pwm.set_pwm(13, 0, pwm0_pos)
 
 
 def lookright(speed):
@@ -132,11 +131,11 @@ def lookright(speed):
 	if pwm0_direction:
 		pwm0_pos -= speed
 		pwm0_pos = ctrl_range(pwm0_pos, pwm0_max, pwm0_min)
-		pwm.set_pwm(0, 0, pwm0_pos)
+		pwm.set_pwm(13, 0, pwm0_pos)
 	else:
 		pwm0_pos += speed
 		pwm0_pos = ctrl_range(pwm0_pos, pwm0_max, pwm0_min)
-		pwm.set_pwm(0, 0, pwm0_pos)
+		pwm.set_pwm(13, 0, pwm0_pos)
 
 
 def up(speed):
@@ -144,11 +143,11 @@ def up(speed):
 	if pwm1_direction:
 		pwm1_pos -= speed
 		pwm1_pos = ctrl_range(pwm1_pos, pwm1_max, pwm1_min)
-		pwm.set_pwm(1, 0, pwm1_pos)
+		pwm.set_pwm(12, 0, pwm1_pos)
 	else:
 		pwm1_pos += speed
 		pwm1_pos = ctrl_range(pwm1_pos, pwm1_max, pwm1_min)
-		pwm.set_pwm(1, 0, pwm1_pos)
+		pwm.set_pwm(12, 0, pwm1_pos)
 	#print(pwm1_pos)
 
 
@@ -157,11 +156,11 @@ def down(speed):
 	if pwm1_direction:
 		pwm1_pos += speed
 		pwm1_pos = ctrl_range(pwm1_pos, pwm1_max, pwm1_min)
-		pwm.set_pwm(1, 0, pwm1_pos)
+		pwm.set_pwm(12, 0, pwm1_pos)
 	else:
 		pwm1_pos -= speed
 		pwm1_pos = ctrl_range(pwm1_pos, pwm1_max, pwm1_min)
-		pwm.set_pwm(1, 0, pwm1_pos)
+		pwm.set_pwm(12, 0, pwm1_pos)
 	#print(pwm1_pos)
 
 def lookup(speed):
@@ -193,11 +192,11 @@ def grab(speed):
 	if pwm3_direction:
 		pwm3_pos -= speed
 		pwm3_pos = ctrl_range(pwm3_pos, pwm3_max, pwm3_min)
-		pwm.set_pwm(3, 0, pwm3_pos)
+		pwm.set_pwm(15, 0, pwm3_pos)
 	else:
 		pwm3_pos += speed
 		pwm3_pos = ctrl_range(pwm3_pos, pwm3_max, pwm3_min)
-		pwm.set_pwm(3, 0, pwm3_pos)
+		pwm.set_pwm(15, 0, pwm3_pos)
 	print(pwm3_pos)
 
 
@@ -206,24 +205,24 @@ def loose(speed):
 	if pwm3_direction:
 		pwm3_pos += speed
 		pwm3_pos = ctrl_range(pwm3_pos, pwm3_max, pwm3_min)
-		pwm.set_pwm(3, 0, pwm3_pos)
+		pwm.set_pwm(15, 0, pwm3_pos)
 	else:
 		pwm3_pos -= speed
 		pwm3_pos = ctrl_range(pwm3_pos, pwm3_max, pwm3_min)
-		pwm.set_pwm(3, 0, pwm3_pos)
+		pwm.set_pwm(15, 0, pwm3_pos)
 	print(pwm3_pos)
 
 
 def servo_init():
-	pwm.set_pwm(0, 0, pwm0_pos)
-	pwm.set_pwm(1, 0, pwm1_pos)
-	pwm.set_pwm(2, 0, pwm2_max)
-	pwm.set_pwm(3, 0, pwm3_pos)
+	pwm.set_pwm(11, 0, pwm0_pos)
+	pwm.set_pwm(12, 0, pwm1_pos)
+	pwm.set_pwm(13, 0, pwm2_max)
+	pwm.set_pwm(14, 0, pwm3_pos)
 
 
 def clean_all():
 	global pwm
-	pwm = Adafruit_PCA9685.PCA9685()
+	pwm = Adafruit_PCA9685.PCA9685(busnum=1)
 	pwm.set_pwm_freq(50)
 	pwm.set_all_pwm(0, 0)
 
@@ -243,9 +242,9 @@ def get_direction():
 if __name__ == '__main__':
 	while 1:
 		for i in range(0,100):
-			pwm.set_pwm(3, 0, (300+i))
+			pwm.set_pwm(13, 0, (300+i))
 			time.sleep(0.05)
 		for i in range(0,100):
-			pwm.set_pwm(3, 0, (400-i))
+			pwm.set_pwm(13, 0, (400-i))
 			time.sleep(0.05)
 

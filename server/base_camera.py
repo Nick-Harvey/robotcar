@@ -91,9 +91,24 @@ class BaseCamera(object):
         """Camera background thread."""
         print('Starting camera thread.')
         frames_iterator = cls.frames()
+        retry_count = 0
+
         for frame in frames_iterator:
-            BaseCamera.frame = frame
-            BaseCamera.event.set()  # send signal to clients
+            if frame is not None:
+                retry_count = 0
+                BaseCamera.frame = frame
+                BaseCamera.event.set()  # send signal to clients
+            else:
+                print('Received  an empty (None) frame') 
+                retry_count += 1
+
+                if retry_count >= 3:
+                    print('Failed to reconnect after 3 retries, exiting thread.')
+                    break
+                else:
+                    print(f'Attempting to reconnect, retry {retry_count}')
+                    time.sleep(1)  # Wait for a bit before retrying
+                    continue  # Skip the rest of the loop and try again
             time.sleep(0)
 
             # if there hasn't been any clients asking for frames in

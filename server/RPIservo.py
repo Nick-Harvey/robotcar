@@ -14,17 +14,17 @@ import random
 '''
 change this form 1 to -1 to reverse servos
 '''
-pwm = Adafruit_PCA9685.PCA9685()
+pwm = Adafruit_PCA9685.PCA9685(busnum=1)
 pwm.set_pwm_freq(50)
 
-init_pwm0 = 300
-init_pwm1 = 300
-init_pwm2 = 300
-init_pwm3 = 300
+init_pwm0 = 303
+init_pwm1 = 297
+init_pwm2 = 304
+init_pwm3 = 307
 
 init_pwm4 = 300
-init_pwm5 = 300
-init_pwm6 = 300
+init_pwm5 = 301
+init_pwm6 = 303
 init_pwm7 = 300
 
 init_pwm8 = 300
@@ -33,7 +33,7 @@ init_pwm10 = 300
 init_pwm11 = 300
 
 init_pwm12 = 300
-init_pwm13 = 300
+init_pwm13 = 299
 init_pwm14 = 300
 init_pwm15 = 300
 
